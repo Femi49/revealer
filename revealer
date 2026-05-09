@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+import time
+from pathlib import Path
+
+from conf import file_check
+from conf import scan_directory
+from conf import print_report
+from banner import banner
+
+if __name__ == '__main__':
+    banner()
+    parser = argparse.ArgumentParser(
+        prog= 'revealer',
+        description = 'Detect disguised malwaare via magic number analysis')
+    parser.add_argument('-f', '--file', help='File or directory to scan', required = True)
+    parser.add_argument('--json', action= 'store_true', help = 'Output results as JSON')
+    parser.add_argument('--no-recurse', action='store_true', help= 'Do not recurse into subdirs')
+    args = parser.parse_args()
+
+    target = Path(args.file)
+
+    if target.is_file():
+        start = time.perf_counter()
+        results = [file_check(target)]
+        total_elapsed = time.perf_counter() - start
+    elif target.is_dir():
+        results, total_elapsed = scan_directory(target, recursive=not args.no_recurse)
+    else:
+        print(f"Error: {target} is not a valid file or directory")
+        exit( 1)
+
+    if args.json:
+        print(json.dumps({'scan_time_seconds': round(total_elapsed,4), 'results': results}, indent=2))
+    else:
+        print_report(results, total_elapsed)
+
+
+    
