@@ -23,9 +23,11 @@ if __name__ == '__main__':
     target = Path(args.file)
 
     if target.is_file():
+        file_start= time.perf_counter()
         start = time.perf_counter()
         results = [file_check(target)]
-        total_elapsed = time.perf_counter() - start
+        total_elapsed = time.perf_counter() - file_start
+        results[0]['scan_time_ms'] = round(total_elapsed * 1000, 3)
     elif target.is_dir():
         results, total_elapsed = scan_directory(target, recursive=not args.no_recurse)
     else:

@@ -48,10 +48,10 @@ def file_check(filepath):
 
     return{
         'file': str(path),
-        'declared_ext': declared_ext,
-        'real_ext':real_type,
+        'declared_extension': declared_ext,
+        'real_type':real_type,
         'mismatch': mismatch,
-        'risk_level': 'unknown',
+        'risk_level': 'risk_level',
         'header_hex': header[:16].hex(' ') # first 16 bytes for debugging
     }
 
